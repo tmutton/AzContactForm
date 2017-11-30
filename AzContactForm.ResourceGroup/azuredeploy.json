@@ -40,7 +40,7 @@
     }
   },
   "variables": {
-    "StorageName": "[concat('Storage', uniqueString(resourceGroup().id))]",
+    "StorageName": "[concat('storage', uniqueString(resourceGroup().id))]",
     "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]",
     "storageaccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('StorageName'))]"
   },
