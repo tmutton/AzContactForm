@@ -27,6 +27,17 @@
         "description": "Describes plan's pricing tier and capacity. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
       }
     },
+    "StorageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ]
+    },
     "StorageType": {
       "type": "string",
       "defaultValue": "Standard_LRS",
@@ -37,12 +48,26 @@
         "Standard_RAGRS",
         "Premium_LRS"
       ]
+    },
+    "repoURL": {
+      "defaultValue": "https://github.com/tmutton/AzContactForm.git",
+      "metadata": {
+        "description": "The URL for the GitHub repository that contains the project to deploy."
+      },
+      "type": "string"
+    },
+    "branch": {
+      "type": "string",
+      "defaultValue": "develop",
+      "metadata": {
+        "description": "The branch of the GitHub repository to use."
+      }
     }
   },
   "variables": {
-    "StorageName": "[concat('storage', uniqueString(resourceGroup().id))]",
+    "storageAccountName": "[concat(uniqueString(resourceGroup().id),'storage')]",
     "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]",
-    "storageaccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('StorageName'))]"
+    "storageaccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
   },
   "resources": [
     {
@@ -63,7 +88,7 @@
       }
     },
     {
-      "name": "[variables('StorageName')]",
+      "name": "[variables('storageAccountName')]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
       "apiVersion": "2016-01-01",
@@ -72,7 +97,7 @@
       },
       "dependsOn": [],
       "tags": {
-        "displayName": "AzContactFormStorage"
+        "displayName": "StorageName"
       },
       "kind": "Storage"
     },
@@ -84,7 +109,7 @@
       "apiVersion": "2016-08-01",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('AppServicePlanName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ],
       "tags": {
         "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('AppServicePlanName')))]": "Resource",
@@ -97,15 +122,15 @@
           "appSettings": [
             {
               "name": "AzureWebJobsDashboard",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageName'), ';AccountKey=', listKeys(variables('storageaccountid'),'2015-05-01-preview').key1)]"
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageaccountid'),'2015-05-01-preview').key1)]"
             },
             {
               "name": "AzureWebJobsStorage",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageName'), ';AccountKey=', listKeys(variables('storageaccountid'),'2015-05-01-preview').key1)]"
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageaccountid'),'2015-05-01-preview').key1)]"
             },
             {
               "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageName'), ';AccountKey=', listKeys(variables('storageaccountid'),'2015-05-01-preview').key1)]"
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageaccountid'),'2015-05-01-preview').key1)]"
             },
             {
               "name": "WEBSITE_CONTENTSHARE",
@@ -114,10 +139,29 @@
             {
               "name": "FUNCTIONS_EXTENSION_VERSION",
               "value": "~1"
+            },
+            {
+              "name": "PROJECT",
+              "value": "AzContactForm.FunctionApp"
             }
           ]
         }
-      }
+      },
+      "resources": [
+        {
+          "apiVersion": "2016-08-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
+          ],
+          "name": "web",
+          "properties": {
+            "RepoUrl": "[parameters('repoURL')]",
+            "branch": "[parameters('branch')]",
+            "IsManualIntegration": true
+          },
+          "type": "sourcecontrols"
+        }
+      ]
     }
   ],
   "outputs": {}
