@@ -14,13 +14,17 @@ namespace AzContactForm
 {
     public static class PostMessage
     {
-        public const string ConnectionString = "DefaultEndpointsProtocol=https;AccountName=ztepb7oskerymstorage;AccountKey=TpIjQT0finPgswlPEFaxixvfRShszopN3SlAx3eNJ+TVgIMd066rIllvIKimYIPECieRfVi08lzOWnscJQ5Uyg==;EndpointSuffix=core.windows.net";
-        public const string TableName = "test";
+        //public const string ConnectionString = "DefaultEndpointsProtocol=https;AccountName=ztepb7oskerymstorage;AccountKey=TpIjQT0finPgswlPEFaxixvfRShszopN3SlAx3eNJ+TVgIMd066rIllvIKimYIPECieRfVi08lzOWnscJQ5Uyg==;EndpointSuffix=core.windows.net";
+        public const string TableName = "messages";
         
         [FunctionName("Post")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = "message")]HttpRequestMessage req, TraceWriter log)
         {
             log.Info("C# HTTP trigger function processed a request.");
+
+            var ConnectionString = System.Environment.GetEnvironmentVariable("AzureWebJobsStorage", EnvironmentVariableTarget.Process);
+
+            ConnectionString = "DefaultEndpointsProtocol=https;AccountName=oxtavr4gardv6storage;AccountKey=8kzqqe64h9f3chsJrooPeerpdiEhqR8nLGSomkxOhle6lfNiCp1Ztczu+IM4X+kKzJImDJWWixtnTGhKxQoPjg==";
 
             // Create account, client and table
             var account = CloudStorageAccount.Parse(ConnectionString);
@@ -52,29 +56,13 @@ namespace AzContactForm
             email = email ?? data.email;
             message = message ?? data.message;
 
+            var msg = new Message(name, email, message);
+
             // todo: add validation for parameters
-
-            // Insert new value in table
-            var coinBtc = new ContactEntity
-            {
-                Symbol = "abc",
-                RowKey = "rowBtc" + DateTime.Now.Ticks,
-                PartitionKey = "partition",
-            };
-
-            table.Execute(TableOperation.Insert(coinBtc));
-
-            // create the message object
-            // todo: do something with this
-            //var contactMessage = new ContactMessage(name, email, message);
+            table.Execute(TableOperation.Insert(msg));
 
             // return a 200 response message
             return req.CreateResponse(HttpStatusCode.OK, "Thank you for your message");
         }
-    }
-
-    public class ContactEntity : TableEntity
-    {
-        public string Symbol { get; set; }
     }
 }

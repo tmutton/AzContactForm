@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage.Table;
+using System;
 
 namespace AzContactForm
 {
-    public class Message
+    public class Message: TableEntity, IMessage
     {
         public Message(string name, string email, string messageBody)
         {
@@ -10,6 +11,8 @@ namespace AzContactForm
             Email = email;
             MessageBody = messageBody;
             Created = DateTimeOffset.Now;
+            PartitionKey = Email;
+            RowKey = Guid.NewGuid().ToString();
         }
 
         public Message(string name, string email, string messageBody, DateTimeOffset created): 
