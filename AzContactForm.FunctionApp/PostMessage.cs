@@ -22,15 +22,15 @@ namespace AzContactForm
         {
             log.Info("C# HTTP trigger function processed a request.");
 
-            var ConnectionString = System.Environment.GetEnvironmentVariable("AzureWebJobsStorage", EnvironmentVariableTarget.Process);
+            var ConnectionString = System.Environment.GetEnvironmentVariable("StorageConnection", EnvironmentVariableTarget.Process);
 
-            ConnectionString = "DefaultEndpointsProtocol=https;AccountName=oxtavr4gardv6storage;AccountKey=8kzqqe64h9f3chsJrooPeerpdiEhqR8nLGSomkxOhle6lfNiCp1Ztczu+IM4X+kKzJImDJWWixtnTGhKxQoPjg==";
+            //ConnectionString = "DefaultEndpointsProtocol=https;AccountName=oxtavr4gardv6storage;AccountKey=8kzqqe64h9f3chsJrooPeerpdiEhqR8nLGSomkxOhle6lfNiCp1Ztczu+IM4X+kKzJImDJWWixtnTGhKxQoPjg==";
 
             // Create account, client and table
             var account = CloudStorageAccount.Parse(ConnectionString);
             var tableClient = account.CreateCloudTableClient();
             var table = tableClient.GetTableReference(TableName);
-            await table.CreateIfNotExistsAsync();
+            table.CreateIfNotExistsAsync().Wait();
 
             // parse query parameters
             log.Info("Parsing query parameters");
