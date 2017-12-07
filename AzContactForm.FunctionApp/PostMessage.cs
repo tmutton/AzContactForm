@@ -14,7 +14,6 @@ namespace AzContactForm
 {
     public static class PostMessage
     {
-        //public const string ConnectionString = "DefaultEndpointsProtocol=https;AccountName=ztepb7oskerymstorage;AccountKey=TpIjQT0finPgswlPEFaxixvfRShszopN3SlAx3eNJ+TVgIMd066rIllvIKimYIPECieRfVi08lzOWnscJQ5Uyg==;EndpointSuffix=core.windows.net";
         public const string TableName = "messages";
         
         [FunctionName("Post")]
@@ -23,9 +22,7 @@ namespace AzContactForm
             log.Info("C# HTTP trigger function processed a request.");
 
             var ConnectionString = System.Environment.GetEnvironmentVariable("StorageConnection", EnvironmentVariableTarget.Process);
-
-            //ConnectionString = "DefaultEndpointsProtocol=https;AccountName=oxtavr4gardv6storage;AccountKey=8kzqqe64h9f3chsJrooPeerpdiEhqR8nLGSomkxOhle6lfNiCp1Ztczu+IM4X+kKzJImDJWWixtnTGhKxQoPjg==";
-
+            
             // Create account, client and table
             var account = CloudStorageAccount.Parse(ConnectionString);
             var tableClient = account.CreateCloudTableClient();
