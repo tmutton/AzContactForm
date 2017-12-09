@@ -22,7 +22,7 @@ namespace AzContactForm
             log.Info("C# HTTP trigger function processed a request.");
 
             // attempt to get the storage connection string from the application settings
-            string StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=storage7bmkmiefvwihu;AccountKey=8gzjrwt5VSFyVz/xSIIorTmTVZQJ94ut+XAMMJt9ab7aRcKqiT/qqMEsXgsNDmpg8oGqxXw3tdPo7609QTGBWQ==";//Environment.GetEnvironmentVariable("StorageConnection", EnvironmentVariableTarget.Process);
+            string StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnection", EnvironmentVariableTarget.Process);
 
             // if we were unable to get the storage connection string
             if (string.IsNullOrEmpty(StorageConnectionString))
