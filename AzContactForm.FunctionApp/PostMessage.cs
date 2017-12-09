@@ -9,6 +9,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using AzContactForm.FunctionApp;
 using FluentValidation.Results;
+using System;
 
 namespace AzContactForm
 {
