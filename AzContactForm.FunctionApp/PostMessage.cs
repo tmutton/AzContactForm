@@ -7,9 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using AzContactForm.FunctionApp;
+using FluentValidation.Results;
 
 namespace AzContactForm
 {
@@ -23,7 +22,7 @@ namespace AzContactForm
             log.Info("C# HTTP trigger function processed a request.");
 
             // attempt to get the storage connection string from the application settings
-            string StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnection", EnvironmentVariableTarget.Process);
+            string StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=storage7bmkmiefvwihu;AccountKey=8gzjrwt5VSFyVz/xSIIorTmTVZQJ94ut+XAMMJt9ab7aRcKqiT/qqMEsXgsNDmpg8oGqxXw3tdPo7609QTGBWQ==";//Environment.GetEnvironmentVariable("StorageConnection", EnvironmentVariableTarget.Process);
 
             // if we were unable to get the storage connection string
             if (string.IsNullOrEmpty(StorageConnectionString))
@@ -74,22 +73,22 @@ namespace AzContactForm
             name = name ?? data.name;
             email = email ?? data.email;
             message = message ?? data.message;
+            
+            // construct message object
+            var messageToSave = new Message(name, email, message);
 
             // validation
-            var validation = new List<string>();
+            MessageValidation validator = new MessageValidation();
+            ValidationResult results = validator.Validate(messageToSave);
 
-            if (string.IsNullOrEmpty(name)) validation.Add("No name was provided"); // name
+            // create a custom validation response using key value pairs
+            var validationResponse = new ValidationResponse("Validation failure", results.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage));
 
-            if (string.IsNullOrEmpty(name)) validation.Add("No message was provided"); // message
-
-            // when there are validation errors, return a 400 response
-            if (validation.Count > 0) return req.CreateResponse(HttpStatusCode.BadRequest, string.Join(Environment.NewLine, validation));
-
-            // construct message object
-            var msg = new Message(name, email, message);
+            // return a 400 with the validation errors
+            if (!results.IsValid) return req.CreateResponse(HttpStatusCode.BadRequest, validationResponse);
 
             // insert message object into the storage table
-            storageTable.Execute(TableOperation.Insert(msg));
+            storageTable.Execute(TableOperation.Insert(messageToSave));
 
             log.Info("Inserted message into table '{0}'");
 
