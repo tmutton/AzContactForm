@@ -127,7 +127,7 @@
           "name": "web",
           "properties": {
             "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
-            "branch": "develop",
+            "branch": "master",
             "IsManualIntegration": true
           },
           "type": "sourcecontrols"
