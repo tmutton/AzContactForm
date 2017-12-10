@@ -6,6 +6,8 @@ namespace AzContactForm.FunctionApp
     {
         public const int MaximumNameLength = 50;
 
+        public const int MaximumEmailLength = 254;
+
         public const int MaximumMessageLength = 1000;
 
         public MessageValidation()
@@ -16,6 +18,7 @@ namespace AzContactForm.FunctionApp
 
             // email
             RuleFor(message => message.Email).EmailAddress().When(x => x.Email.Length > 0).WithMessage("Please enter a valid email address");
+            RuleFor(message => message.Email).MaximumLength(MaximumEmailLength).WithMessage("Email addresses cannot exceed {0} characters");
 
             // message
             RuleFor(message => message.MessageBody).NotEmpty().WithMessage("Message cannot be empty");
