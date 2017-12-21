@@ -19,9 +19,7 @@ On the repository page click on the folder "AzContactForm.ResourceGroup".
 
 Click the button "Deploy to Azure".
 
-[Deploy to azure button]
-
-This will send you to deploy.azure.com where you'll be presented with 
+This will send you to deploy.azure.com where you'll be presented with a screen to setup and deploy the resource to your subscription.
 
 ## Visual Studio
 Clone this repo and open up the solution in Visual Studio (version >= 15.3 and Visual Studio 2017 Tools for Azure Functions installed).
@@ -42,4 +40,6 @@ You will find three resources of types:
 
 Once AzContactForm has deployed head over to the resource group and navigate to the Function. You'll need to find the post function's url so open that up and click on "Get function URL".
 
-Open the Demo in the repository and use the url above to replace the url in the demo code as seen below.
+Find the Demo in the root of this repository and open it. Use the url above to replace the url in the default.htm file
+
+Open Demo/default.htm and post the form
