@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AzContactForm Demo</title>
+    <script src="jquery-3.2.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            console.log('The demo is ready');
+
+            // change this url to your own
+            var functionUrl = "https://functionidvvx5uvo4du6.azurewebsites.net/api/message?code=DuOss1IkoTiYHCuIOHqLga0OHFhXzuIEX6jmRhqHEGQ81HvYtaq9rQ==";
+
+            function SendMessage(name, email, message) {
+                var settings = {
+                    "method": "POST",
+                    "async": true,
+                    "crossDomain": true,
+                    "url": functionUrl,
+                    "headers": {
+                        "content-type": "application/json"
+                    },
+                    "processData": false,
+                    "dataType": "json",
+                    "data": "{\n\t\"name\": \"William Shakespeare\",\n\t\"email\": \"william@shakespeare.com\",\n\t\"message\": \"Brevity is the soul of wit.\"\n}"
+                }
+
+                $.ajax(settings).done(function (response) {
+                    console.log('Successfully sent the request');
+                });
+            };
+
+            $('input#sendMessage').click(function () {
+                var name = $("input#name").val();
+                var email = $("input#email").val();
+                var message = $("input#message").val();
+
+                SendMessage(name, email, message);
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>AzContactForm Demo</h1>
+    <table>
+        <tr>
+            <td>
+                <label>Name</label>
+            </td>
+            <td>
+                <input type="text" name="name" id="name" value="William Shakespeare">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Email</label>
+            </td>
+            <td>
+                <input type="text" name="email" id="email" value="william@shakespeare.com">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Message</label>
+            </td>
+            <td>
+                <input type="text" name="message" id="message" value="Brevity is the soul of wit.">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" id="sendMessage" value="Send message" />
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
