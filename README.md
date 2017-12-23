@@ -43,3 +43,18 @@ Once AzContactForm has deployed head over to the resource group and navigate to 
 Find the Demo in the root of this repository and open it. Use the url above to replace the url in the default.htm file
 
 Open Demo/default.htm and post the form
+
+## Validation
+The following is a list of validation rules for the message body of a posted message.
+
+Name
+Mandatory: Yes
+Maximum length: 50 characters
+
+Email
+Mandatory: No
+Maximum length: 254 characters
+
+Message
+Mandatory: Yes
+Maximum length: 1000 characters
