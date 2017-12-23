@@ -47,14 +47,20 @@ Open Demo/default.htm and post the form
 ## Validation
 The following is a list of validation rules for the message body of a posted message.
 
-Name
+### Name
+
 Mandatory: Yes
+
 Maximum length: 50 characters
 
-Email
+### Email
+
 Mandatory: No
+
 Maximum length: 254 characters
 
-Message
+### Message
+
 Mandatory: Yes
+
 Maximum length: 1000 characters
