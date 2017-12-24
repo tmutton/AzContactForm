@@ -128,7 +128,12 @@
           "properties": {
             "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
             "branch": "master",
-            "IsManualIntegration": true
+            "IsManualIntegration": true,
+            "cors": {
+              "allowedOrigins": [
+                "*"
+              ]
+            }
           },
           "type": "sourcecontrols"
         }
