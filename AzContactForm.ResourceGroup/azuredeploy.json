@@ -108,7 +108,7 @@
         {
           "apiVersion": "2016-08-01",
           "name": "web",
-          "type": "sourcecontrols",
+          "type": "Microsoft.Web/sites/sourcecontrols",
           "dependsOn": [
             "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
           ],
@@ -121,7 +121,7 @@
         {
           "apiVersion": "2016-08-01",
           "name": "appsettings",
-          "type": "config",
+          "type": "Microsoft.Web/sites/config",
           "dependsOn": [
             "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
           ],
@@ -138,11 +138,17 @@
         {
           "apiVersion": "2016-08-01",
           "name": "appsettings",
-          "type": "cors",
+          "type": "Microsoft.Web/sites/config",
           "dependsOn": [
             "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
           ],
-          "allowedOrigins": ["http://test.com"]
+          "properties": {
+            "cors": {
+              "allowedOrigins": [
+                "https://test123.com"
+              ]
+            }
+          }
         }
       ],
       "tags": {
