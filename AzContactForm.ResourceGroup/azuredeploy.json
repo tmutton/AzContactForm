@@ -65,44 +65,7 @@
       "name": "[variables('FunctionName')]",
       "properties": {
         "name": "[variables('FunctionName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
-        "siteConfig": {
-          //"appSettings": [
-          //  {
-          //    "name": "AzureWebJobsDashboard",
-          //    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
-          //  },
-          //  {
-          //    "name": "AzureWebJobsStorage",
-          //    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
-          //  },
-          //  {
-          //    "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-          //    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
-          //  },
-          //  {
-          //    "name": "WEBSITE_CONTENTSHARE",
-          //    "value": "[toLower(variables('FunctionName'))]"
-          //  },
-          //  {
-          //    "name": "FUNCTIONS_EXTENSION_VERSION",
-          //    "value": "~1"
-          //  },
-          //  {
-          //    "name": "PROJECT",
-          //    "value": "AzContactForm.FunctionApp"
-          //  },
-          //  {
-          //    "name": "StorageConnection",
-          //    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
-          //  }
-          //],
-          //"cors": {
-          //  "allowedOrigins": [
-          //    "[parameters('OriginDomain')]"
-          //  ]
-          //}
-        }
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
       },
       "resources": [
         {
