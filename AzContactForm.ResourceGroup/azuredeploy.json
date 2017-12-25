@@ -21,7 +21,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2017-10-01",
+      "apiVersion": "2016-01-01",
       "dependsOn": [],
       "kind": "Storage",
       "location": "[resourceGroup().location]",
@@ -36,7 +36,7 @@
       "type": "Microsoft.Storage/storageAccounts"
     },
     {
-      "apiVersion": "2016-09-01",
+      "apiVersion": "2015-08-01",
       "type": "Microsoft.Web/serverfarms",
       "location": "[resourceGroup().location]",
       "name": "[variables('AppServicePlanName')]",
@@ -71,13 +71,13 @@
           "name": "appsettings",
           "type": "config",
           "properties": {
-            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2016-08-01').key1)]",
-            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2016-08-01').key1)]",
-            "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2016-08-01').key1)]",
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
+            "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
             "WEBSITE_CONTENTSHARE": "[toLower(variables('FunctionName'))]",
             "FUNCTIONS_EXTENSION_VERSION": "~1",
             "PROJECT": "AzContactForm.FunctionApp",
-            "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2016-08-01').key1)]",
+            "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
             "cors": {
               "allowedOrigins": [ "http://tmutton.uk" ]
             }
