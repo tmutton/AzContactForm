@@ -81,7 +81,7 @@
             "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
             "cors": {
               "allowedOrigins": [
-                "[parameters('OriginDomain')]"
+                "[if(empty(parameters('OriginDomain')), json('null'), parameters('OriginDomain'))]"
               ]
             }
           },
