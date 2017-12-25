@@ -70,11 +70,10 @@
       "resources": [
         {
           "apiVersion": "2016-08-01",
+          "kind": "functionapp",
+          "location": "[parameters('siteLocation')]",
           "name": "appsettings",
           "type": "Microsoft.Web/sites/config",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
-          ],
           "properties": {
             "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
             "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
@@ -83,35 +82,40 @@
             "FUNCTIONS_EXTENSION_VERSION": "~1",
             "PROJECT": "AzContactForm.FunctionApp",
             "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
-          }
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
+          ]
         },
         {
           "apiVersion": "2016-08-01",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
-          ],
+          "kind": "functionapp",
+          "location": "[parameters('siteLocation')]",
           "name": "web",
           "properties": {
             "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
             "branch": "master",
             "IsManualIntegration": true
           },
-          "type": "sourcecontrols"
+          "type": "sourcecontrols",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
+          ]
         },
         {
           "apiVersion": "2016-08-01",
           "name": "appsettings",
           "type": "Microsoft.Web/sites/config",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
-          ],
           "properties": {
             "cors": {
               "allowedOrigins": [
                 "https://test123.com"
               ]
             }
-          }
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
+          ]
         }
       ],
       "tags": {
