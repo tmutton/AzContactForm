@@ -67,56 +67,82 @@
         "name": "[variables('FunctionName')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
         "siteConfig": {
-          "appSettings": [
-            {
-              "name": "AzureWebJobsDashboard",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
-            },
-            {
-              "name": "AzureWebJobsStorage",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
-            },
-            {
-              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
-            },
-            {
-              "name": "WEBSITE_CONTENTSHARE",
-              "value": "[toLower(variables('FunctionName'))]"
-            },
-            {
-              "name": "FUNCTIONS_EXTENSION_VERSION",
-              "value": "~1"
-            },
-            {
-              "name": "PROJECT",
-              "value": "AzContactForm.FunctionApp"
-            },
-            {
-              "name": "StorageConnection",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
-            }
-          ],
-          "cors": {
-            "allowedOrigins": [
-              "[parameters('OriginDomain')]"
-            ]
-          }
+          //"appSettings": [
+          //  {
+          //    "name": "AzureWebJobsDashboard",
+          //    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
+          //  },
+          //  {
+          //    "name": "AzureWebJobsStorage",
+          //    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
+          //  },
+          //  {
+          //    "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+          //    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
+          //  },
+          //  {
+          //    "name": "WEBSITE_CONTENTSHARE",
+          //    "value": "[toLower(variables('FunctionName'))]"
+          //  },
+          //  {
+          //    "name": "FUNCTIONS_EXTENSION_VERSION",
+          //    "value": "~1"
+          //  },
+          //  {
+          //    "name": "PROJECT",
+          //    "value": "AzContactForm.FunctionApp"
+          //  },
+          //  {
+          //    "name": "StorageConnection",
+          //    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
+          //  }
+          //],
+          //"cors": {
+          //  "allowedOrigins": [
+          //    "[parameters('OriginDomain')]"
+          //  ]
+          //}
         }
       },
       "resources": [
         {
           "apiVersion": "2016-08-01",
+          "name": "web",
+          "type": "sourcecontrols",
           "dependsOn": [
             "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
           ],
-          "name": "web",
           "properties": {
             "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
             "branch": "master",
             "IsManualIntegration": true
-          },
-          "type": "sourcecontrols"
+          }
+        },
+        {
+          "apiVersion": "2016-08-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
+          ],
+          "properties": {
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
+            "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
+            "WEBSITE_CONTENTSHARE": "[toLower(variables('FunctionName'))]",
+            "FUNCTIONS_EXTENSION_VERSION": "~1",
+            "PROJECT": "AzContactForm.FunctionApp",
+            "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
+          }
+        },
+        {
+          "apiVersion": "2016-08-01",
+          "name": "cors",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
+          ],
+          "allowedOrigins": ["http://test.com"]
         }
       ],
       "tags": {
