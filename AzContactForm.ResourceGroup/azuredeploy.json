@@ -2,16 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "siteLocation": {
-      "type": "string"
-    },
-    "originDomain": {
-      "type": "string",
-      "defaultValue": "http://tmutton.uk",
-      "metadata": {
-        "description": "Defines an origin domain to be used for Cross-Origin Resource Sharing (CORS)"
-      }
-    }
+    
   },
   "variables": {
     "AppServicePlanName": "[concat('AppServicePlan', uniqueString(resourceGroup().id))]",
