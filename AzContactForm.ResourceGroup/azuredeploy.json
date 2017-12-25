@@ -137,8 +137,8 @@
         },
         {
           "apiVersion": "2016-08-01",
-          "name": "cors",
-          "type": "config",
+          "name": "appsettings",
+          "type": "cors",
           "dependsOn": [
             "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
           ],
