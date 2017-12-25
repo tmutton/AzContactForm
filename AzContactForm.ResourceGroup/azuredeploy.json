@@ -136,7 +136,11 @@
             "branch": "master",
             "IsManualIntegration": true,
             "cors": {
-              "allowedOrigins": [ "[parameters('OriginDomain')]" ]
+              "allowedOrigins": [
+                "https://test.azure.com",
+                "https://test-staging.azure.com",
+                "https://test-next.azure.com"
+              ]
             }
           },
           "type": "sourcecontrols"
