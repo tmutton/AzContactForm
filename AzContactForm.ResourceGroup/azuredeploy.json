@@ -6,7 +6,7 @@
       "type": "string",
       "defaultValue": "UK South"
     },
-    "OriginDomain": {
+    "originDomain": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -19,7 +19,7 @@
     "StorageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
     "StorageAccountId": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]",
     "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]",
-    "OriginDomain": "[if(empty(parameters('OriginDomain')), json('null'), parameters('OriginDomain'))]"
+    "OriginDomain": "[if(empty(parameters('originDomain')), json('null'), parameters('originDomain'))]"
   },
   "resources": [
     {
