@@ -70,10 +70,8 @@
       "resources": [
         {
           "apiVersion": "2016-08-01",
-          "kind": "functionapp",
-          "location": "[parameters('siteLocation')]",
           "name": "appsettings",
-          "type": "Microsoft.Web/sites/config",
+          "type": "config",
           "properties": {
             "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
             "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
@@ -89,8 +87,6 @@
         },
         {
           "apiVersion": "2016-08-01",
-          "kind": "functionapp",
-          "location": "[parameters('siteLocation')]",
           "name": "web",
           "properties": {
             "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
@@ -105,7 +101,7 @@
         {
           "apiVersion": "2016-08-01",
           "name": "appsettings",
-          "type": "Microsoft.Web/sites/config",
+          "type": "config",
           "properties": {
             "cors": {
               "allowedOrigins": [
