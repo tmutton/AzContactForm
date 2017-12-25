@@ -3,10 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "siteLocation": {
+      "defaultValue": "UK South",
       "type": "string"
     },
     "OriginDomain": {
       "type": "string",
+      "minLength": 11,
+      "maxLength": 2083,
       "metadata": {
         "description": "Defines an origin domain to be used for Cross-Origin Resource Sharing (CORS)"
       }
@@ -15,14 +18,28 @@
   "variables": {
     "AppServicePlanName": "[concat('AppServicePlan', uniqueString(resourceGroup().id))]",
     "StorageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
-    "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]",
-    "StorageAccountId": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]"
+    "StorageAccountId": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]",
+    "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
+      "apiVersion": "2016-01-01",
+      "dependsOn": [],
+      "kind": "Storage",
+      "location": "[parameters('siteLocation')]",
+      "name": "[variables('StorageAccountName')]",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "tags": {
+        "displayName": "StorageName"
+      },
+      "type": "Microsoft.Storage/storageAccounts"
+    },
+    {
       "apiVersion": "2015-08-01",
       "type": "Microsoft.Web/serverfarms",
-      "dependsOn": [],
       "location": "[parameters('siteLocation')]",
       "name": "[variables('AppServicePlanName')]",
       "properties": {
@@ -38,30 +55,11 @@
       },
       "tags": {
         "displayName": "AppServicePlan"
-      }
-    },
-    {
-      "apiVersion": "2016-01-01",
-      "type": "Microsoft.Storage/storageAccounts",
-      "dependsOn": [],
-      "kind": "Storage",
-      "location": "[parameters('siteLocation')]",
-      "name": "[variables('StorageAccountName')]",
-      "sku": {
-        "name": "Standard_LRS",
-        "tier": "Standard"
       },
-      "tags": {
-        "displayName": "StorageName"
-      }
+      "dependsOn": []
     },
     {
       "apiVersion": "2016-08-01",
-      "type": "Microsoft.Web/sites",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
-      ],
       "kind": "functionapp",
       "location": "[parameters('siteLocation')]",
       "name": "[variables('FunctionName')]",
@@ -124,7 +122,12 @@
       "tags": {
         "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName')))]": "Resource",
         "displayName": "AzContactFormFunction"
-      }
+      },
+      "type": "Microsoft.Web/sites",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
+      ]
     }
   ],
   "outputs": {}
