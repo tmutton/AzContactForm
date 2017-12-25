@@ -121,7 +121,14 @@
               "name": "StorageConnection",
               "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
             }
-          ]
+          ],
+          "cors": {
+            "allowedOrigins": [
+              "https://test.azure.com",
+              "https://test-staging.azure.com",
+              "https://test-next.azure.com"
+            ]
+          }
         }
       },
       "resources": [
@@ -134,14 +141,7 @@
           "properties": {
             "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
             "branch": "master",
-            "IsManualIntegration": true,
-            "cors": {
-              "allowedOrigins": [
-                "https://test.azure.com",
-                "https://test-staging.azure.com",
-                "https://test-next.azure.com"
-              ]
-            }
+            "IsManualIntegration": true
           },
           "type": "sourcecontrols"
         }
