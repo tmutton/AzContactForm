@@ -2,38 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "AppServicePlanSkuName": {
-      "allowedValues": [
-        "F1",
-        "D1",
-        "B1",
-        "B2",
-        "B3",
-        "S1",
-        "S2",
-        "S3",
-        "P1",
-        "P2",
-        "P3",
-        "P4"
-      ],
-      "defaultValue": "F1",
-      "metadata": {
-        "description": "Describes plan's pricing tier and capacity. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
-      },
-      "type": "string"
-    },
-    "StorageType": {
-      "type": "string",
-      "defaultValue": "Standard_LRS",
-      "allowedValues": [
-        "Standard_LRS",
-        "Standard_ZRS",
-        "Standard_GRS",
-        "Standard_RAGRS",
-        "Premium_LRS"
-      ]
-    },
     "OriginDomain": {
       "type": "string",
       "metadata": {
@@ -50,6 +18,7 @@
   "resources": [
     {
       "apiVersion": "2015-08-01",
+      "type": "Microsoft.Web/serverfarms",
       "dependsOn": [],
       "location": "[resourceGroup().location]",
       "name": "[variables('AppServicePlanName')]",
@@ -58,29 +27,34 @@
         "numberOfWorkers": 1
       },
       "sku": {
-        "name": "[parameters('AppServicePlanSkuName')]"
+        "name": "F1",
+        "tier": "Free",
+        "size": "F1",
+        "family": "F",
+        "capacity": 0
       },
       "tags": {
         "displayName": "AppServicePlan"
-      },
-      "type": "Microsoft.Web/serverfarms"
+      }
     },
     {
       "apiVersion": "2016-01-01",
+      "type": "Microsoft.Storage/storageAccounts",
       "dependsOn": [],
       "kind": "Storage",
       "location": "[resourceGroup().location]",
       "name": "[variables('StorageAccountName')]",
       "sku": {
-        "name": "[parameters('StorageType')]"
+        "name": "Standard_LRS",
+        "tier": "Standard"
       },
       "tags": {
         "displayName": "StorageName"
-      },
-      "type": "Microsoft.Storage/storageAccounts"
+      }
     },
     {
-      "apiVersion": "2016-08-01",
+      "apiVersion": "2017-09-01",
+      "type": "Microsoft.Web/sites",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
@@ -124,9 +98,7 @@
           ],
           "cors": {
             "allowedOrigins": [
-              "https://test.azure.com",
-              "https://test-staging.azure.com",
-              "https://test-next.azure.com"
+              "[parameters('OriginDomain')]"
             ]
           }
         }
@@ -149,8 +121,7 @@
       "tags": {
         "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName')))]": "Resource",
         "displayName": "AzContactFormFunction"
-      },
-      "type": "Microsoft.Web/sites"
+      }
     }
   ],
   "outputs": {}
