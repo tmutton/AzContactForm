@@ -78,12 +78,7 @@
             "WEBSITE_CONTENTSHARE": "[toLower(variables('FunctionName'))]",
             "FUNCTIONS_EXTENSION_VERSION": "~1",
             "PROJECT": "AzContactForm.FunctionApp",
-            "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
-            "cors": {
-              "allowedOrigins": [
-                "[if(empty(parameters('OriginDomain')), json('null'), parameters('OriginDomain'))]"
-              ]
-            }
+            "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
           },
           "dependsOn": [
             "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
