@@ -70,19 +70,6 @@
       "resources": [
         {
           "apiVersion": "2016-08-01",
-          "name": "web",
-          "type": "sourcecontrols",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
-          ],
-          "properties": {
-            "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
-            "branch": "master",
-            "IsManualIntegration": true
-          }
-        },
-        {
-          "apiVersion": "2016-08-01",
           "name": "appsettings",
           "type": "Microsoft.Web/sites/config",
           "dependsOn": [
@@ -97,6 +84,19 @@
             "PROJECT": "AzContactForm.FunctionApp",
             "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
           }
+        },
+        {
+          "apiVersion": "2016-08-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
+          ],
+          "name": "web",
+          "properties": {
+            "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
+            "branch": "master",
+            "IsManualIntegration": true
+          },
+          "type": "sourcecontrols"
         },
         {
           "apiVersion": "2016-08-01",
