@@ -21,7 +21,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2016-01-01",
+      "apiVersion": "2017-09-01-preview",
       "dependsOn": [],
       "kind": "Storage",
       "location": "[parameters('siteLocation')]",
@@ -36,7 +36,7 @@
       "type": "Microsoft.Storage/storageAccounts"
     },
     {
-      "apiVersion": "2015-08-01",
+      "apiVersion": "2017-09-01-preview",
       "type": "Microsoft.Web/serverfarms",
       "location": "[parameters('siteLocation')]",
       "name": "[variables('AppServicePlanName')]",
@@ -57,7 +57,7 @@
       "dependsOn": []
     },
     {
-      "apiVersion": "2016-08-01",
+      "apiVersion": "2017-09-01-preview",
       "kind": "functionapp",
       "location": "[parameters('siteLocation')]",
       "name": "[variables('FunctionName')]",
@@ -67,7 +67,7 @@
       },
       "resources": [
         {
-          "apiVersion": "2016-08-01",
+          "apiVersion": "2017-09-01-preview",
           "name": "appsettings",
           "type": "config",
           "properties": {
@@ -87,7 +87,7 @@
           ]
         },
         {
-          "apiVersion": "2016-08-01",
+          "apiVersion": "2017-09-01-preview",
           "name": "web",
           "properties": {
             "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
