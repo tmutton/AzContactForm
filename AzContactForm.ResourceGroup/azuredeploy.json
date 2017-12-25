@@ -8,8 +8,8 @@
     },
     "OriginDomain": {
       "type": "string",
-      "minLength": 11,
-      "maxLength": 2083,
+      //"minLength": 11,
+      //"maxLength": 2083,
       "metadata": {
         "description": "Defines an origin domain to be used for Cross-Origin Resource Sharing (CORS)"
       }
@@ -79,7 +79,12 @@
             "WEBSITE_CONTENTSHARE": "[toLower(variables('FunctionName'))]",
             "FUNCTIONS_EXTENSION_VERSION": "~1",
             "PROJECT": "AzContactForm.FunctionApp",
-            "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
+            "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
+            "cors": {
+              "allowedOrigins": [
+                "[parameters('OriginDomain')]"
+              ]
+            }
           },
           "dependsOn": [
             "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
@@ -94,21 +99,6 @@
             "IsManualIntegration": true
           },
           "type": "sourcecontrols",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
-          ]
-        },
-        {
-          "apiVersion": "2016-08-01",
-          "name": "appsettings",
-          "type": "config",
-          "properties": {
-            "cors": {
-              "allowedOrigins": [
-                "https://test123.com"
-              ]
-            }
-          },
           "dependsOn": [
             "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
           ]
