@@ -18,8 +18,7 @@
     "AppServicePlanName": "[concat('AppServicePlan', uniqueString(resourceGroup().id))]",
     "StorageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
     "StorageAccountId": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]",
-    "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]",
-    "OriginDomain": "[if(empty(parameters('originDomain')), 'true', 'false')]"
+    "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
@@ -81,9 +80,7 @@
             "PROJECT": "AzContactForm.FunctionApp",
             "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
             "cors": {
-              "allowedOrigins": [
-                "[variables('OriginDomain')]"
-              ]
+              "allowedOrigins": "array(parameters('originDomain'))"
             }
           },
           "dependsOn": [
