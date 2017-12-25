@@ -8,7 +8,7 @@
     },
     "originDomain": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "http://tmutton.uk",
       "metadata": {
         "description": "Defines an origin domain to be used for Cross-Origin Resource Sharing (CORS)"
       }
@@ -80,7 +80,7 @@
             "PROJECT": "AzContactForm.FunctionApp",
             "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
             "cors": {
-              "allowedOrigins": "array(parameters('originDomain'))"
+              "allowedOrigins": "parameters('originDomain')"
             }
           },
           "dependsOn": [
