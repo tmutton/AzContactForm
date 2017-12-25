@@ -3,8 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "siteLocation": {
-      "type": "string",
-      "defaultValue": "UK South"
+      "type": "string"
     },
     "originDomain": {
       "type": "string",
@@ -80,7 +79,7 @@
             "PROJECT": "AzContactForm.FunctionApp",
             "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
             "cors": {
-              "allowedOrigins": "parameters('originDomain')"
+              "allowedOrigins": "[parameters('originDomain')]"
             }
           },
           "dependsOn": [
