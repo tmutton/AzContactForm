@@ -9,8 +9,6 @@
     "OriginDomain": {
       "type": "string",
       "defaultValue": null,
-      //"minLength": 11,
-      //"maxLength": 2083,
       "metadata": {
         "description": "Defines an origin domain to be used for Cross-Origin Resource Sharing (CORS)"
       }
