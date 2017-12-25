@@ -53,7 +53,7 @@
       }
     },
     {
-      "apiVersion": "2017-09-01",
+      "apiVersion": "2016-08-01",
       "type": "Microsoft.Web/sites",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
