@@ -33,6 +33,12 @@
         "Standard_RAGRS",
         "Premium_LRS"
       ]
+    },
+    "OriginDomain": {
+      "type": "string",
+      "metadata": {
+        "description": "Defines an origin domain to be used for Cross-Origin Resource Sharing (CORS)"
+      }
     }
   },
   "variables": {
@@ -130,9 +136,7 @@
             "branch": "master",
             "IsManualIntegration": true,
             "cors": {
-              "allowedOrigins": [
-                "*"
-              ]
+              "allowedOrigins": [ "[parameters('OriginDomain')]" ]
             }
           },
           "type": "sourcecontrols"
