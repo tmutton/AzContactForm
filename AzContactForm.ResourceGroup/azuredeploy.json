@@ -79,7 +79,7 @@
             "PROJECT": "AzContactForm.FunctionApp",
             "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
             "cors": {
-              "allowedOrigins": "[parameters('originDomain')]"
+              "allowedOrigins": [ "http://tmutton.uk" ]
             }
           },
           "dependsOn": [
