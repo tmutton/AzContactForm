@@ -2,6 +2,9 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "siteLocation": {
+      "type": "string"
+    },
     "OriginDomain": {
       "type": "string",
       "metadata": {
@@ -20,7 +23,7 @@
       "apiVersion": "2015-08-01",
       "type": "Microsoft.Web/serverfarms",
       "dependsOn": [],
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('siteLocation')]",
       "name": "[variables('AppServicePlanName')]",
       "properties": {
         "name": "[variables('AppServicePlanName')]",
@@ -42,7 +45,7 @@
       "type": "Microsoft.Storage/storageAccounts",
       "dependsOn": [],
       "kind": "Storage",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('siteLocation')]",
       "name": "[variables('StorageAccountName')]",
       "sku": {
         "name": "Standard_LRS",
@@ -60,7 +63,7 @@
         "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
       ],
       "kind": "functionapp",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('siteLocation')]",
       "name": "[variables('FunctionName')]",
       "properties": {
         "name": "[variables('FunctionName')]",
