@@ -52,7 +52,7 @@
     {
       "name": "[variables('StorageAccountName')]",
       "type": "Microsoft.Storage/storageAccounts",
-      "location": "[resourceGroup().location]",
+      "location": "uksouth",
       "apiVersion": "2016-01-01",
       "sku": {
         "name": "[parameters('storageType')]"
@@ -66,7 +66,7 @@
     {
       "name": "[variables('AppServicePlanName')]",
       "type": "Microsoft.Web/serverfarms",
-      "location": "[resourceGroup().location]",
+      "location": "UK South",
       "apiVersion": "2015-08-01",
       "sku": {
         "name": "[parameters('serverFarmSkuName')]"
@@ -87,7 +87,7 @@
         "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
       ],
       "kind": "functionapp",
-      "location": "[resourceGroup().location]",
+      "location": "UK South",
       "name": "[variables('FunctionName')]",
       "properties": {
         "name": "[variables('FunctionName')]",
