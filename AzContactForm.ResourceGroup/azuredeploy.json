@@ -8,53 +8,88 @@
       "metadata": {
         "description": "Defines an origin domain to be used for Cross-Origin Resource Sharing (CORS)"
       }
+    },
+    "storageType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ]
+    },
+    "serverFarmName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "serverFarmSkuName": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "Describes plan's pricing tier and capacity. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+      }
     }
   },
   "variables": {
     "AppServicePlanName": "[concat('AppServicePlan', uniqueString(resourceGroup().id))]",
     "StorageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
     "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]",
-    "StorageAccountId": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]"
+    "StorageAccountId": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]",
   },
   "resources": [
     {
-      "apiVersion": "2016-01-01",
-      "dependsOn": [],
-      "kind": "Storage",
-      "location": "[resourceGroup().location]",
       "name": "[variables('StorageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-01-01",
       "sku": {
-        "name": "Standard_LRS",
-        "tier": "Standard"
+        "name": "[parameters('storageType')]"
       },
+      "dependsOn": [],
       "tags": {
-        "displayName": "StorageName"
+        "displayName": "Storage"
       },
-      "type": "Microsoft.Storage/storageAccounts"
+      "kind": "Storage"
     },
     {
-      "apiVersion": "2015-08-01",
+      "name": "[variables('AppServicePlanName')]",
       "type": "Microsoft.Web/serverfarms",
       "location": "[resourceGroup().location]",
-      "name": "[variables('AppServicePlanName')]",
-      "properties": {
-        "name": "[variables('AppServicePlanName')]",
-        "numberOfWorkers": 1
-      },
+      "apiVersion": "2015-08-01",
       "sku": {
-        "name": "F1",
-        "tier": "Free",
-        "size": "F1",
-        "family": "F",
-        "capacity": 0
+        "name": "[parameters('serverFarmSkuName')]"
       },
+      "dependsOn": [],
       "tags": {
         "displayName": "AppServicePlan"
       },
-      "dependsOn": []
+      "properties": {
+        "name": "[parameters('serverFarmName')]",
+        "numberOfWorkers": 1
+      }
     },
     {
-      "apiVersion": "2016-08-01",
+      "apiVersion": "2015-08-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
+      ],
       "kind": "functionapp",
       "location": "[resourceGroup().location]",
       "name": "[variables('FunctionName')]",
@@ -64,7 +99,7 @@
       },
       "resources": [
         {
-          "apiVersion": "2016-08-01",
+          "apiVersion": "2015-08-01",
           "name": "appsettings",
           "type": "config",
           "properties": {
@@ -84,7 +119,7 @@
           ]
         },
         {
-          "apiVersion": "2016-08-01",
+          "apiVersion": "2015-08-01",
           "name": "web",
           "properties": {
             "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
@@ -101,11 +136,7 @@
         "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName')))]": "Resource",
         "displayName": "AzContactFormFunction"
       },
-      "type": "Microsoft.Web/sites",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
-      ]
+      "type": "Microsoft.Web/sites"
     }
   ],
   "outputs": {}
