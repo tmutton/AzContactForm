@@ -20,10 +20,6 @@
         "Premium_LRS"
       ]
     },
-    "serverFarmName": {
-      "type": "string",
-      "minLength": 1
-    },
     "serverFarmSkuName": {
       "type": "string",
       "defaultValue": "F1",
@@ -80,7 +76,7 @@
         "displayName": "AppServicePlan"
       },
       "properties": {
-        "name": "[parameters('serverFarmName')]",
+        "name": "[variables('AppServicePlanName')]",
         "numberOfWorkers": 1
       }
     },
