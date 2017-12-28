@@ -95,7 +95,7 @@
         "siteConfig": {
           "cors": {
             "allowedOrigins": [
-              "[parameters('originDomain')]"
+              ""
             ]
           }
         }
