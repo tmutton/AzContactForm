@@ -46,27 +46,27 @@
     "AppServicePlanName": "[concat('AppServicePlan', uniqueString(resourceGroup().id))]",
     "StorageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
     "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]",
-    "StorageAccountId": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]",
+    "StorageAccountId": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]"
   },
   "resources": [
     {
       "name": "[variables('StorageAccountName')]",
       "type": "Microsoft.Storage/storageAccounts",
-      "kind": "Storage",
-      "location": "uksouth",
+      "location": "[resourceGroup().location]",
       "apiVersion": "2016-01-01",
       "sku": {
         "name": "[parameters('storageType')]"
       },
+      "dependsOn": [],
       "tags": {
         "displayName": "Storage"
       },
-      "dependsOn": []
+      "kind": "Storage"
     },
     {
       "name": "[variables('AppServicePlanName')]",
       "type": "Microsoft.Web/serverfarms",
-      "location": "UK South",
+      "location": "[resourceGroup().location]",
       "apiVersion": "2015-08-01",
       "sku": {
         "name": "[parameters('serverFarmSkuName')]"
@@ -78,7 +78,8 @@
         "name": "[variables('AppServicePlanName')]",
         "numberOfWorkers": 1
       },
-      "dependsOn": []
+      "dependsOn": [],
+      "kind": "functionapp"
     },
     {
       "name": "[variables('FunctionName')]",
@@ -121,7 +122,7 @@
           "apiVersion": "2015-08-01",
           "properties": {
             "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
-            "branch": "master",
+            "branch": "develop",
             "IsManualIntegration": true
           },
           "dependsOn": [
