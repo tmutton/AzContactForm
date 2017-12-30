@@ -2,13 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "originDomain": {
-      "type": "string",
-      "defaultValue": "http://tmutton.uk",
-      "metadata": {
-        "description": "Defines an origin domain to be used for Cross-Origin Resource Sharing (CORS)"
-      }
-    },
     "storageAccountType": {
       "type": "string",
       "defaultValue": "Standard_LRS",
@@ -79,14 +72,7 @@
       "apiVersion": "2015-04-01",
       "properties": {
         "name": "[variables('FunctionName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
-        "siteConfig": {
-          "cors": {
-            "allowedOrigins": [
-              "[if(equals(parameters('originDomain'),''), json('null'), parameters('originDomain'))]"
-            ]
-          }
-        }
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
       },
       "resources": [
         {
