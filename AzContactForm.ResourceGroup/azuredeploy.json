@@ -85,7 +85,7 @@
       "name": "[variables('FunctionName')]",
       "type": "Microsoft.Web/sites",
       "kind": "functionapp",
-      "location": "UK South",
+      "location": "[resourceGroup().location]",
       "apiVersion": "2015-08-01",
       "properties": {
         "name": "[variables('FunctionName')]",
