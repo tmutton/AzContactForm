@@ -83,7 +83,7 @@
         "siteConfig": {
           "cors": {
             "allowedOrigins": [
-              "*"
+              "[if(equals(parameters('originDomain'),''), json('null'), parameters('originDomain'))]"
             ]
           }
         }
