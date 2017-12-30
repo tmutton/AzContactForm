@@ -9,55 +9,46 @@
         "description": "Defines an origin domain to be used for Cross-Origin Resource Sharing (CORS)"
       }
     },
-    "storageType": {
+    "storageAccountType": {
       "type": "string",
       "defaultValue": "Standard_LRS",
       "allowedValues": [
         "Standard_LRS",
-        "Standard_ZRS",
         "Standard_GRS",
-        "Standard_RAGRS",
-        "Premium_LRS"
-      ]
-    },
-    "serverFarmSkuName": {
-      "type": "string",
-      "defaultValue": "F1",
-      "allowedValues": [
-        "F1",
-        "D1",
-        "B1",
-        "B2",
-        "B3",
-        "S1",
-        "S2",
-        "S3",
-        "P1",
-        "P2",
-        "P3",
-        "P4"
+        "Standard_RAGRS"
       ],
       "metadata": {
-        "description": "Describes plan's pricing tier and capacity. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+        "description": "Storage Account type"
+      }
+    },
+    "sku": {
+      "type": "string",
+      "allowedValues": [
+        "Free",
+        "Shared",
+        "Basic",
+        "Standard"
+      ],
+      "defaultValue": "Standard",
+      "metadata": {
+        "description": "The pricing tier for the hosting plan."
       }
     }
   },
   "variables": {
     "AppServicePlanName": "[concat('AppServicePlan', uniqueString(resourceGroup().id))]",
     "StorageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
-    "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]",
-    "StorageAccountId": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]"
+    "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
       "name": "[variables('StorageAccountName')]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-01-01",
+      "apiVersion": "2016-12-01",
       "sku": {
-        "name": "[parameters('storageType')]"
+        "name": "[parameters('storageAccountType')]"
       },
-      "dependsOn": [],
       "tags": {
         "displayName": "Storage"
       },
@@ -66,19 +57,18 @@
     {
       "name": "[variables('AppServicePlanName')]",
       "type": "Microsoft.Web/serverfarms",
-      "location": "UK South",
-      "apiVersion": "2015-08-01",
-      "sku": {
-        "name": "[parameters('serverFarmSkuName')]"
-      },
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-04-01",
       "tags": {
         "displayName": "AppServicePlan"
       },
       "properties": {
         "name": "[variables('AppServicePlanName')]",
+        "sku": "[parameters('sku')]",
+        "workerSize": "Small",
+        "hostingEnvironment": "",
         "numberOfWorkers": 1
       },
-      "dependsOn": [],
       "kind": "functionapp"
     },
     {
@@ -86,7 +76,7 @@
       "type": "Microsoft.Web/sites",
       "kind": "functionapp",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2015-08-01",
+      "apiVersion": "2015-04-01",
       "properties": {
         "name": "[variables('FunctionName')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
@@ -104,20 +94,18 @@
           "type": "config",
           "apiVersion": "2015-08-01",
           "properties": {
-            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
-            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
-            "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]",
-            "WEBSITE_CONTENTSHARE": "[toLower(variables('FunctionName'))]",
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1,';')]",
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1,';')]",
             "FUNCTIONS_EXTENSION_VERSION": "~1",
-            "PROJECT": "AzContactForm.FunctionApp",
-            "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountId'),'2015-05-01-preview').key1)]"
+            "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1,';')]",
+            "Project": "AzContactForm.FunctionApp"
           },
           "dependsOn": [
             "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
           ]
         },
         {
-          "name": "web",
+          "name": "sourcecontrol",
           "type": "sourcecontrols",
           "apiVersion": "2015-08-01",
           "properties": {
@@ -131,7 +119,6 @@
         }
       ],
       "tags": {
-        "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName')))]": "Resource",
         "displayName": "AzContactFormFunction"
       },
       "dependsOn": [
