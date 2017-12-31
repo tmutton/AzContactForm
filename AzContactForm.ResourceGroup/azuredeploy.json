@@ -31,7 +31,9 @@
   "variables": {
     "AppServicePlanName": "[concat('AppServicePlan', uniqueString(resourceGroup().id))]",
     "StorageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
-    "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]"
+    "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]",
+    "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
+    "Branch": "develop"
   },
   "resources": [
     {
@@ -95,8 +97,8 @@
           "type": "sourcecontrols",
           "apiVersion": "2015-08-01",
           "properties": {
-            "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
-            "branch": "develop",
+            "RepoUrl": "[variables('RepoUrl')]",
+            "branch": "[variables('Branch')]",
             "IsManualIntegration": true
           },
           "dependsOn": [
