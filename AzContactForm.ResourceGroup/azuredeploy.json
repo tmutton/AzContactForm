@@ -29,7 +29,7 @@
     }
   },
   "variables": {
-    "hostingPlanName": "[concat('AppServicePlan', uniqueString(resourceGroup().id))]",
+    "hostingPlanName": "[concat('HostingPlan', uniqueString(resourceGroup().id))]",
     "storageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
     "functionName": "[concat('Function', uniqueString(resourceGroup().id))]",
     "repoUrl": "https://github.com/tmutton/AzContactForm.git",
