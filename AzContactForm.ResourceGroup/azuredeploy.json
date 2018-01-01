@@ -29,36 +29,30 @@
     }
   },
   "variables": {
-    "AppServicePlanName": "[concat('AppServicePlan', uniqueString(resourceGroup().id))]",
-    "StorageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
-    "FunctionName": "[concat('Function', uniqueString(resourceGroup().id))]",
-    "RepoUrl": "https://github.com/tmutton/AzContactForm.git",
-    "Branch": "master"
+    "hostingPlanName": "[concat('AppServicePlan', uniqueString(resourceGroup().id))]",
+    "storageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
+    "functionName": "[concat('Function', uniqueString(resourceGroup().id))]",
+    "repoUrl": "https://github.com/tmutton/AzContactForm.git",
+    "branch": "master"
   },
   "resources": [
     {
-      "name": "[variables('StorageAccountName')]",
+      "name": "[variables('storageAccountName')]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
       "apiVersion": "2016-12-01",
       "sku": {
         "name": "[parameters('storageAccountType')]"
       },
-      "tags": {
-        "displayName": "Storage"
-      },
       "kind": "Storage"
     },
     {
-      "name": "[variables('AppServicePlanName')]",
+      "name": "[variables('hostingPlanName')]",
       "type": "Microsoft.Web/serverfarms",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-04-01",
-      "tags": {
-        "displayName": "AppServicePlan"
-      },
       "properties": {
-        "name": "[variables('AppServicePlanName')]",
+        "name": "[variables('hostingPlanName')]",
         "sku": "[parameters('sku')]",
         "workerSize": "Small",
         "hostingEnvironment": "",
@@ -67,14 +61,14 @@
       "kind": "functionapp"
     },
     {
-      "name": "[variables('FunctionName')]",
+      "name": "[variables('functionName')]",
       "type": "Microsoft.Web/sites",
       "kind": "functionapp",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-04-01",
       "properties": {
-        "name": "[variables('FunctionName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
+        "name": "[variables('functionName')]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]"
       },
       "resources": [
         {
@@ -82,14 +76,14 @@
           "type": "config",
           "apiVersion": "2015-08-01",
           "properties": {
-            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountName'),'2015-05-01-preview').key1)]",
-            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountName'),'2015-05-01-preview').key1)]",
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountName'),'2015-05-01-preview').key1)]",
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountName'),'2015-05-01-preview').key1)]",
             "FUNCTIONS_EXTENSION_VERSION": "~1",
             "PROJECT": "AzContactForm.FunctionApp",
-            "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('StorageAccountName'), ';AccountKey=', listKeys(variables('StorageAccountName'),'2015-05-01-preview').key1)]"
+            "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountName'),'2015-05-01-preview').key1)]"
           },
           "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
+            "[resourceId('Microsoft.Web/Sites', variables('functionName'))]"
           ]
         },
         {
@@ -97,21 +91,18 @@
           "type": "sourcecontrols",
           "apiVersion": "2015-08-01",
           "properties": {
-            "RepoUrl": "[variables('RepoUrl')]",
-            "branch": "[variables('Branch')]",
+            "repoUrl": "[variables('repoUrl')]",
+            "branch": "[variables('branch')]",
             "IsManualIntegration": true
           },
           "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('FunctionName'))]"
+            "[resourceId('Microsoft.Web/Sites', variables('functionName'))]"
           ]
         }
       ],
-      "tags": {
-        "displayName": "AzContactFormFunction"
-      },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ]
     }
   ],
