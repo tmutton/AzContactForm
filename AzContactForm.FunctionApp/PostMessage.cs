@@ -5,51 +5,17 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
 using AzContactForm.FunctionApp;
 using FluentValidation.Results;
-using System;
 
 namespace AzContactForm
 {
     public static class PostMessage
     {
-        const string StorageTableName = "messages";
-
         [FunctionName("Post")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = "message")]HttpRequestMessage req, TraceWriter log)
         {
             log.Info("C# HTTP trigger function processed a request.");
-
-            // attempt to get the storage connection string from the application settings
-            string StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnection", EnvironmentVariableTarget.Process);
-
-            // if we were unable to get the storage connection string
-            if (string.IsNullOrEmpty(StorageConnectionString))
-            {
-                log.Error("No connection string for the storage could be found");
-
-                return req.CreateResponse(HttpStatusCode.InternalServerError);
-            }
-
-            // create account, client and reference table
-            var storageAccount = CloudStorageAccount.Parse(StorageConnectionString);
-
-            var storageTableClient = storageAccount.CreateCloudTableClient();
-
-            var storageTable = storageTableClient.GetTableReference(StorageTableName);
-
-            // attempt to create the table if it doesn't exist
-            var tableExists = storageTable.Exists();
-
-            if (!tableExists)
-            {
-                log.Info("Table '{0}' does not exist. Creating table..", StorageTableName);
-
-                // the table doesn't exist - create it
-                storageTable.Create();
-            }
 
             // parse query parameters
             log.Info("Parsing query parameters");
@@ -88,10 +54,8 @@ namespace AzContactForm
             // return a 400 with the validation errors
             if (!results.IsValid) return req.CreateResponse(HttpStatusCode.BadRequest, validationResponse);
 
-            // insert message object into the storage table
-            storageTable.Execute(TableOperation.Insert(messageToSave));
-
-            log.Info("Inserted message into table '{0}'");
+            // todo: send event to event grid
+            log.Info("Sent Event to Event Grid");
 
             // return a 200 response message
             return req.CreateResponse(HttpStatusCode.OK, "Your message has been sent. Thank you.");
