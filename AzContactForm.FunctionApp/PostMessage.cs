@@ -16,7 +16,7 @@ namespace AzContactForm
 {
     public static class PostMessage
     {
-        public static string eventTopic = "/SUBSCRIPTIONS/EFCF1B1C-B797-4AD3-B432-43D90045E26D/RESOURCEGROUPS/FIBTO/PROVIDERS/MICROSOFT.EVENTGRID/TOPICS/DELIVERYREQUESTS";
+        public static string eventTopic = "/subscriptions/efcf1b1c-b797-4ad3-b432-43d90045e26d/resourceGroups/fibToDeliveries/providers/Microsoft.EventGrid/topics/deliveryRequests";
 
         public static string eventTopicUrl = "https://deliveryrequests.westus2-1.eventgrid.azure.net/api/events";
 
