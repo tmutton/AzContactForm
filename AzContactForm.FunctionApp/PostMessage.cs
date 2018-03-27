@@ -16,16 +16,32 @@ namespace AzContactForm
 {
     public static class PostMessage
     {
-        public static string eventTopic = "/subscriptions/efcf1b1c-b797-4ad3-b432-43d90045e26d/resourceGroups/fibToDeliveries/providers/Microsoft.EventGrid/topics/deliveryRequests";
+        public static string EventTopic;
 
-        public static string eventTopicUrl = "https://deliveryrequests.westus2-1.eventgrid.azure.net/api/events";
+        public static string EventTopicUrl;
 
-        public static string eventTopicSasKey = "kv2rlUCX34Qx933/6ijZSiNwnjB1LzovggSeWy1RhFM=";
+        public static string EventTopicSasKey;
 
         [FunctionName("Post")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = "message")]HttpRequestMessage req, TraceWriter log)
         {
             log.Info("C# HTTP trigger function processed a request.");
+
+            // read variables from app settings
+            EventTopic = Environment.GetEnvironmentVariable("EventTopic", EnvironmentVariableTarget.Process);
+
+            EventTopicUrl = Environment.GetEnvironmentVariable("EventTopicUrl", EnvironmentVariableTarget.Process);
+
+            EventTopicSasKey = Environment.GetEnvironmentVariable("EventTopicSasKey", EnvironmentVariableTarget.Process);
+
+            if (EventTopic == null || EventTopicUrl == null || EventTopicSasKey == null)
+            {
+                var msg = "Could not read Application Settings";
+
+                log.Error(msg);
+
+                return req.CreateResponse(HttpStatusCode.InternalServerError, msg);
+            }
 
             // parse query parameters
             log.Info("Parsing query parameters");
@@ -70,7 +86,7 @@ namespace AzContactForm
             var event1 = new Event<Message>
             {
                 Id = Guid.NewGuid().ToString(),
-                Topic = eventTopic,
+                Topic = EventTopic,
                 Subject = "WindDetails",
                 EventTime = DateTimeOffset.Now.ToString("o"),
                 EventType = "newRequest",
@@ -80,13 +96,13 @@ namespace AzContactForm
 
             HttpClient httpClient = new HttpClient
             {
-                BaseAddress = new Uri(eventTopicUrl)
+                BaseAddress = new Uri(EventTopicUrl)
             };
 
             var json = JsonConvert.SerializeObject(events);
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "");
-            request.Headers.Add("aeg-sas-key", eventTopicSasKey);
+            request.Headers.Add("aeg-sas-key", EventTopicSasKey);
             request.Content = new StringContent(json,
                                                 Encoding.UTF8,
                                                 "application/json");
