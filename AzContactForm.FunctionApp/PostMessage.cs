@@ -27,21 +27,22 @@ namespace AzContactForm
         {
             log.Info("C# HTTP trigger function processed a request.");
 
+            // validate the required environment variables
+            var envVariables = Environment.GetEnvironmentVariables();
+
+            ValidationResult envVarValidationResult = new ConfigValidation().Validate(envVariables);
+
+            var envVarValidationResponse = new ValidationResponse("Validation failure", envVarValidationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage));
+
+            // return a 400 with the validation errors
+            if (!envVarValidationResult.IsValid) return req.CreateResponse(HttpStatusCode.BadRequest, envVarValidationResponse);
+            
             // read variables from app settings
             EventTopic = Environment.GetEnvironmentVariable("EventTopic", EnvironmentVariableTarget.Process);
 
             EventTopicUrl = Environment.GetEnvironmentVariable("EventTopicUrl", EnvironmentVariableTarget.Process);
 
             EventTopicSasKey = Environment.GetEnvironmentVariable("EventTopicSasKey", EnvironmentVariableTarget.Process);
-
-            if (EventTopic == null || EventTopicUrl == null || EventTopicSasKey == null)
-            {
-                var msg = "Could not read Application Settings";
-
-                log.Error(msg);
-
-                return req.CreateResponse(HttpStatusCode.InternalServerError, msg);
-            }
 
             // parse query parameters
             log.Info("Parsing query parameters");
@@ -68,11 +69,10 @@ namespace AzContactForm
             message = message ?? data.message;
             
             // construct message object
-            var messageToSave = new Message(name, email, message);
+            var messageRequest = new Message(name, email, message);
 
             // validation
-            MessageValidation validator = new MessageValidation();
-            ValidationResult results = validator.Validate(messageToSave);
+            ValidationResult results = new MessageValidation().Validate(messageRequest);
 
             // create a custom validation response using key value pairs
             var validationResponse = new ValidationResponse("Validation failure", results.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage));
@@ -80,19 +80,19 @@ namespace AzContactForm
             // return a 400 with the validation errors
             if (!results.IsValid) return req.CreateResponse(HttpStatusCode.BadRequest, validationResponse);
 
-            // todo: send event to event grid
+            // send event to event grid
             var events = new List<Event<Message>>();
 
-            var event1 = new Event<Message>
+            var eventMessage = new Event<Message>
             {
                 Id = Guid.NewGuid().ToString(),
                 Topic = EventTopic,
-                Subject = "WindDetails",
+                Subject = "/azContactForm/",
+                EventType = "AzContactForm.NewMessage",
                 EventTime = DateTimeOffset.Now.ToString("o"),
-                EventType = "newRequest",
-                Data = messageToSave
+                Data = messageRequest
             };
-            events.Add(event1);
+            events.Add(eventMessage);
 
             HttpClient httpClient = new HttpClient
             {
@@ -106,15 +106,15 @@ namespace AzContactForm
             request.Content = new StringContent(json,
                                                 Encoding.UTF8,
                                                 "application/json");
-
-            httpClient.SendAsync(request)
+            
+            await httpClient.SendAsync(request)
                   .ContinueWith(responseTask =>
                   {
                       Console.WriteLine("Response: {0}", responseTask.Result);
+
+                      log.Info("Sent Event to Event Grid");
                   });
-
-            log.Info("Sent Event to Event Grid");
-
+            
             // return a 200 response message
             return req.CreateResponse(HttpStatusCode.OK, "Your message has been sent. Thank you.");
         }
