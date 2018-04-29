@@ -33,8 +33,10 @@
     "storageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
     "functionName": "[concat('Function', uniqueString(resourceGroup().id))]",
     "eventGridTopicName": "[concat('EventGridTopic', uniqueString(resourceGroup().id))]",
+    "logicAppName": "[concat('LogicApp', uniqueString(resourceGroup().id))]",
     "repoUrl": "https://github.com/tmutton/AzContactForm.git",
-    "branch": "master"
+    "branch": "master",
+    "connections_azureeventgrid_name": "azureeventgrid"
   },
   "resources": [
     {
@@ -112,7 +114,10 @@
       "apiVersion": "2018-01-01",
       "location": "[resourceGroup().location]",
       "tags": {},
-      "properties": {}
+      "properties": {},
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', variables('connections_azureeventgrid_name'))]"
+      ]
     }
   ],
   "outputs": {}
